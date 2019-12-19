@@ -5,9 +5,7 @@ import styles from './App.module.css';
 import uuid from 'uuid/v4'
 
 const initialExpenses = [
-  { id: uuid(), charge: "rent", amount: 1000 },
-  { id: uuid(), charge: "car payment", amount: 300 },
-  { id: uuid(), charge: "insurance", amount: 200 }
+
 ];
 
 
@@ -16,6 +14,8 @@ function App() {
   const [expenses, setExpenses] = useState(initialExpenses);
   const [charge, setCharge] = useState('');
   const [amount, setAmount] = useState('');
+  const [edit, setEdit] = useState(false);
+  const [id, setId] = useState(0);
 
   const handleCharge = e => {
     setCharge(e.target.value)
@@ -28,9 +28,24 @@ function App() {
     if (charge !== '' && amount > 0) {
       const singleExpense = { id: uuid(), charge, amount };
       setExpenses([...expenses, singleExpense]);
+      setCharge('');
+      setAmount('')
     } else {
-
+      return alert('Please fill out the both portions of the form');
     }
+  };
+
+  const clearAll = () => {
+    setExpenses([]);
+  };
+
+  const deleteItem = id => {
+    let tempExpenses = expenses.filter(item => item.id !== id);
+    setExpenses(tempExpenses);
+  };
+
+  const editItem = id => {
+
   };
 
   return (
@@ -38,7 +53,7 @@ function App() {
       <h1>Budget Calculator</h1>
       <main className={styles.main}>
         <ExpenseForm charge={charge} amount={amount} handleAmount={handleAmount} handleCharge={handleCharge} handleSubmit={handleSubmit} />
-        <ExpenseList expenses={expenses} />
+        <ExpenseList expenses={expenses} clearAll={clearAll} deleteItem={deleteItem} editItem={editItem} />
       </main>
       <h1>total spending: <span>$ {expenses.reduce((accumulated, current) => {
         return (accumulated += parseInt(current.amount));
